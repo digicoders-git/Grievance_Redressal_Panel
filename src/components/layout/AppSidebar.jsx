@@ -74,7 +74,7 @@ const AppSidebar = () => {
         }`}
       >
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:rotate-6 transition-all duration-300">
+          {/* <div className="flex items-center justify-center transition-all duration-300 shadow-lg w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-700 shadow-brand-500/30 group-hover:rotate-6">
             <svg
               width="26"
               height="26"
@@ -87,7 +87,8 @@ const AppSidebar = () => {
             >
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
-          </div>
+          </div> */}
+          <img src="logo.png" alt="" className="flex items-center justify-center transition-all duration-300 w-15 h-15 rounded-2xl shadow-brand-500/30 " />
           {(isExpanded || isHovered || isMobileOpen) && (
             <div className="flex flex-col">
               <h1 className="text-xl font-black text-slate-800 dark:text-white tracking-tight leading-none mb-0.5">
@@ -108,7 +109,7 @@ const AppSidebar = () => {
       </div>
 
       {/* Nav */}
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar flex-grow px-4">
+      <div className="flex flex-col flex-grow px-4 overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="py-8">
           <div className="flex flex-col gap-6">
             <div>
@@ -154,7 +155,7 @@ const AppSidebar = () => {
       {/* Support Desk */}
       {(isExpanded || isHovered || isMobileOpen) && (
         <div className="p-5 mx-2 mb-8 rounded-[24px] bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 shadow-sm relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-16 h-16 bg-brand-50 dark:bg-gray-900 rounded-full group-hover:scale-150 transition-transform duration-500 opacity-50"></div>
+          <div className="absolute w-16 h-16 transition-transform duration-500 rounded-full opacity-50 -right-4 -top-4 bg-brand-50 dark:bg-gray-900 group-hover:scale-150"></div>
           <p className="text-[10px] text-brand-600 dark:text-brand-400 font-black uppercase tracking-wider mb-1 relative">
             Support Desk
           </p>
