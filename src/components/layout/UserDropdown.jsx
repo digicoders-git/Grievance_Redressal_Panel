@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Dropdown } from "../ui/Dropdown";
 import { DropdownItem } from "../ui/DropdownItem";
 
+import Swal from "sweetalert2";
+
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -17,8 +19,27 @@ export default function UserDropdown() {
   }
 
   function handleLogout() {
-    closeDropdown();
-    logout();
+    closeDropdown(); // Close dropdown first
+    Swal.fire({
+      title: "Logout Confirmation",
+      text: "Are you sure you want to sign out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#4f46e5", // Match brand color
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, sign out!",
+      cancelButtonText: "Cancel",
+      background: document.documentElement.classList.contains("dark")
+        ? "#111827"
+        : "#fff",
+      color: document.documentElement.classList.contains("dark")
+        ? "#fff"
+        : "#000",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+      }
+    });
   }
   return (
     <div className="relative">

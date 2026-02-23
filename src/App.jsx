@@ -11,7 +11,18 @@ export default function App() {
         position="top-center"
         containerStyle={{ zIndex: 100000000 }}
         toastOptions={{
-          className: "dark:bg-gray-800 dark:text-white",
+          duration: 3000,
+          className:
+            "dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+          style: {
+            borderRadius: "10px",
+            background: document.documentElement.classList.contains("dark")
+              ? "#1f2937"
+              : "#fff",
+            color: document.documentElement.classList.contains("dark")
+              ? "#fff"
+              : "#1f2937",
+          },
         }}
       />
       <AppRoutes />
