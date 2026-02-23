@@ -308,7 +308,8 @@ export default function LoginPage() {
 
           {/* Footer */}
           <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
-            © 2025 Grievance Redressal System. All rights reserved.
+            © {new Date().getFullYear()} Grievance Redressal System. All rights
+            reserved.
           </p>
         </div>
       </div>
