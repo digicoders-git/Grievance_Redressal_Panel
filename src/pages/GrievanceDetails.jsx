@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import PageMeta from "../components/common/PageMeta";
 import {
-  fetchAllGrievances,
+  fetchGrievanceById,
   claimGrievance,
   resolveGrievance,
 } from "../apis/officer";
@@ -23,17 +23,14 @@ export default function GrievanceDetails() {
   useEffect(() => {
     const load = async () => {
       try {
-        const all = await fetchAllGrievances();
-        const found = all.find((g) => g._id === id);
-        if (!found) {
-          toast.error("Grievance not found");
-          navigate("/grievances");
-          return;
-        }
-        setGrievance(found);
-        if (found.remarks) setRemarks(found.remarks);
-      } catch {
-        toast.error("Failed to load grievance");
+        const data = await fetchGrievanceById(id);
+        setGrievance(data);
+        if (data.remarks) setRemarks(data.remarks);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Failed to load grievance",
+        );
+        navigate("/grievances");
       } finally {
         setLoading(false);
       }
@@ -45,8 +42,8 @@ export default function GrievanceDetails() {
     try {
       await claimGrievance(id);
       toast.success("Grievance claimed successfully");
-      const all = await fetchAllGrievances();
-      setGrievance(all.find((g) => g._id === id));
+      const data = await fetchGrievanceById(id);
+      setGrievance(data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to claim");
     }
@@ -61,8 +58,8 @@ export default function GrievanceDetails() {
     try {
       await resolveGrievance(id, remarks, resolveStatus);
       toast.success(`Grievance marked as ${resolveStatus}`);
-      const all = await fetchAllGrievances();
-      setGrievance(all.find((g) => g._id === id));
+      const data = await fetchGrievanceById(id);
+      setGrievance(data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update");
     } finally {

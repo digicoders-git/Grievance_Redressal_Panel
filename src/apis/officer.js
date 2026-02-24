@@ -20,3 +20,15 @@ export const resolveGrievance = async (id, remarks, status) => {
   const response = await API.patch(`/officer/grievance/resolve/${id}`, { remarks, status });
   return response.data;
 };
+
+export const fetchOfficerDashboardStats = async () => {
+  const response = await API.get("/admin/dashboard/officer/stats");
+  return response.data;
+};
+
+export const fetchGrievanceById = async (id) => {
+  const response = await API.get(`/officer/grievance/get/${id}`);
+  return response.data;
+};
+
+

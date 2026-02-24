@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import PageMeta from "../components/common/PageMeta";
-import { fetchAllGrievances, claimGrievance } from "../apis/officer";
+import {
+  fetchAllGrievances,
+  claimGrievance,
+  fetchOfficerDashboardStats,
+} from "../apis/officer";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
@@ -8,36 +12,48 @@ import { Link } from "react-router";
 export default function Dashboard() {
   const { user } = useAuth();
   const [grievances, setGrievances] = useState([]);
+  const [stats, setStats] = useState({
+    total: 0,
+    pendingAvailable: 0,
+    inProgress: 0,
+    resolved: 0,
+    rejected: 0,
+  });
   const [loading, setLoading] = useState(false);
 
-  const loadGrievances = useCallback(async () => {
+  const loadDashboardData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchAllGrievances();
-      setGrievances(data || []);
+      const [grievancesData, statsData] = await Promise.all([
+        fetchAllGrievances(),
+        fetchOfficerDashboardStats(),
+      ]);
+      setGrievances(grievancesData || []);
+      if (statsData?.success) {
+        setStats({
+          total: statsData.stats.grievances.total,
+          pendingAvailable: statsData.stats.grievances.pendingAvailable,
+          inProgress: statsData.stats.grievances.inProgress,
+          resolved: statsData.stats.grievances.resolved,
+          rejected: statsData.stats.grievances.rejected,
+        });
+      }
     } catch (error) {
-      toast.error("Failed to fetch grievances");
+      toast.error("Failed to fetch dashboard data");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadGrievances();
-  }, [loadGrievances]);
-
-  const stats = {
-    total: grievances.length,
-    pending: grievances.filter((g) => g.status === "Pending").length,
-    inProgress: grievances.filter((g) => g.status === "In Progress").length,
-    resolved: grievances.filter((g) => g.status === "Resolved").length,
-  };
+    loadDashboardData();
+  }, [loadDashboardData]);
 
   const handleClaim = async (id) => {
     try {
       await claimGrievance(id);
       toast.success("Grievance claimed successfully");
-      loadGrievances();
+      loadDashboardData();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to claim grievance");
     }
@@ -72,7 +88,7 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
-            title="Total Grievances"
+            title="My Total"
             value={stats.total}
             color="brand"
             icon={
@@ -92,8 +108,8 @@ export default function Dashboard() {
             }
           />
           <StatCard
-            title="Pending"
-            value={stats.pending}
+            title="Pending (Unclaimed)"
+            value={stats.pendingAvailable}
             color="warning"
             icon={
               <svg
@@ -110,7 +126,7 @@ export default function Dashboard() {
             }
           />
           <StatCard
-            title="In Progress"
+            title="My In Progress"
             value={stats.inProgress}
             color="blue"
             icon={
@@ -127,7 +143,7 @@ export default function Dashboard() {
             }
           />
           <StatCard
-            title="Resolved"
+            title="My Resolved"
             value={stats.resolved}
             color="success"
             icon={
